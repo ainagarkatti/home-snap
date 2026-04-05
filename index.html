@@ -77,20 +77,20 @@
         <h3>Snap your appliance</h3>
         <p>Take a photo or upload an image of any home device — fridge, washer, AC, TV, and more</p>
         <div class="capture-actions">
-          <button class="chip" id="btn-camera">
+          <label class="chip" for="file-camera">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
               <circle cx="12" cy="13" r="4"/>
             </svg>
             Camera
-          </button>
-          <button class="chip" id="btn-upload">
+          </label>
+          <label class="chip" for="file-upload">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
               <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
             </svg>
             Upload
-          </button>
+          </label>
         </div>
       </div>
 
@@ -104,8 +104,9 @@
       </div>
     </div>
 
-    <!-- Hidden file input -->
-    <input type="file" id="file-input" accept="image/*" style="display:none" />
+    <!-- Hidden file inputs -->
+    <input type="file" id="file-camera" accept="image/*" capture="environment" style="display:none" />
+    <input type="file" id="file-upload" accept="image/*" style="display:none" />
 
     <!-- Analyze button -->
     <div id="analyze-section" class="hidden">
@@ -128,20 +129,6 @@
 
   </main>
 
-  <!-- ── Camera View ── -->
-  <div class="camera-view hidden" id="camera-view">
-    <video id="camera-feed" playsinline autoplay muted></video>
-    <div class="camera-controls">
-      <button class="cam-cancel" id="cam-cancel">Cancel</button>
-      <button class="shutter-btn" id="shutter"></button>
-      <button class="cam-flip" id="cam-flip" title="Flip camera">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-          <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
-          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/>
-        </svg>
-      </button>
-    </div>
-  </div>
 
   <script src="app.js"></script>
 </body>

@@ -2,80 +2,36 @@
 
 // ── State ──────────────────────────────────────────────────────────────────
 let imageDataUrl = null;
-let stream = null;
-let facingMode = 'environment';
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 
-const captureZone      = $('capture-zone');
-const placeholder      = $('capture-placeholder');
-const previewWrap      = $('preview-wrap');
-const previewImage     = $('preview-image');
-const analyzeBtn       = $('analyze-btn');
-const analyzeSection   = $('analyze-section');
-const resultsSection   = $('results-section');
-const errorToast       = $('error-toast');
-const cameraView       = $('camera-view');
-const cameraFeed       = $('camera-feed');
-const fileInput        = $('file-input');
+const captureZone    = $('capture-zone');
+const placeholder    = $('capture-placeholder');
+const previewWrap    = $('preview-wrap');
+const previewImage   = $('preview-image');
+const analyzeBtn     = $('analyze-btn');
+const analyzeSection = $('analyze-section');
+const resultsSection = $('results-section');
+const errorToast     = $('error-toast');
 
-// ── File input ─────────────────────────────────────────────────────────────
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => setImage(ev.target.result);
-  reader.readAsDataURL(file);
-  fileInput.value = '';
-});
-
-// ── Camera ─────────────────────────────────────────────────────────────────
-async function openCamera() {
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: false
-    });
-    cameraFeed.srcObject = stream;
-    await cameraFeed.play();
-    cameraView.classList.remove('hidden');
-  } catch (err) {
-    // Fall back to file picker if camera not available
-    fileInput.click();
-  }
+// ── File inputs ────────────────────────────────────────────────────────────
+function bindFileInput(id) {
+  $(id).addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => setImage(ev.target.result);
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  });
 }
+bindFileInput('file-camera');
+bindFileInput('file-upload');
 
-function closeCamera() {
-  if (stream) {
-    stream.getTracks().forEach(t => t.stop());
-    stream = null;
-  }
-  cameraView.classList.add('hidden');
-}
-
-function capturePhoto() {
-  const canvas = document.createElement('canvas');
-  canvas.width = cameraFeed.videoWidth;
-  canvas.height = cameraFeed.videoHeight;
-  canvas.getContext('2d').drawImage(cameraFeed, 0, 0);
-  const data = canvas.toDataURL('image/jpeg', 0.92);
-  closeCamera();
-  setImage(data);
-}
-
-$('btn-camera').addEventListener('click', openCamera);
-$('btn-upload').addEventListener('click', () => fileInput.click());
-$('cam-cancel').addEventListener('click', closeCamera);
-$('cam-flip').addEventListener('click', async () => {
-  facingMode = facingMode === 'environment' ? 'user' : 'environment';
-  closeCamera();
-  await openCamera();
-});
-$('shutter').addEventListener('click', capturePhoto);
 $('preview-change').addEventListener('click', () => {
   setImage(null);
-  openCamera();
+  $('file-camera').click();
 });
 
 // ── Image state ────────────────────────────────────────────────────────────
