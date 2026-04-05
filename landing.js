@@ -68,5 +68,33 @@ function getLocalPrice() {
   return PRICES[currency] || PRICES.USD;
 }
 
-const priceEl = document.getElementById('landing-price');
-if (priceEl) priceEl.textContent = getLocalPrice();
+const BIZ_PRICES = {
+  USD:'$19.99', GBP:'£15.99', EUR:'€17.99', AED:'AED 73',
+  SAR:'SAR 75', QAR:'QAR 73', KWD:'KWD 6.1', BHD:'BHD 7.5',
+  OMR:'OMR 7.7', INR:'₹1,599', AUD:'A$29.99', CAD:'C$26.99',
+  SGD:'S$26.99', NZD:'NZ$29.99', HKD:'HK$155', JPY:'¥2,999',
+  CNY:'¥145', PKR:'PKR 5,500', BRL:'R$99', MXN:'MX$349',
+  ZAR:'R349', NGN:'₦29,999', KES:'KES 2,599', CHF:'CHF 17.99',
+  SEK:'SEK 209', NOK:'NOK 209', DKK:'DKK 134', MYR:'RM 89',
+  THB:'฿699', PHP:'₱1,149',
+};
+
+const proEl = document.getElementById('landing-price-pro');
+if (proEl) proEl.textContent = getLocalPrice();
+const bizEl = document.getElementById('landing-price-biz');
+if (bizEl) bizEl.textContent = BIZ_PRICES[detectCurrency()] || BIZ_PRICES.USD;
+
+function detectCurrency() {
+  const locale = navigator.language || 'en-US';
+  const region = locale.split('-')[1] || '';
+  const map = {
+    AE:'AED', SA:'SAR', QA:'QAR', KW:'KWD', BH:'BHD', OM:'OMR',
+    US:'USD', GB:'GBP', DE:'EUR', FR:'EUR', IT:'EUR', ES:'EUR',
+    NL:'EUR', PT:'EUR', IE:'EUR', AT:'EUR', BE:'EUR', FI:'EUR',
+    IN:'INR', AU:'AUD', CA:'CAD', SG:'SGD', NZ:'NZD', HK:'HKD',
+    JP:'JPY', CN:'CNY', PK:'PKR', BR:'BRL', MX:'MXN', ZA:'ZAR',
+    NG:'NGN', KE:'KES', CH:'CHF', SE:'SEK', NO:'NOK', DK:'DKK',
+    MY:'MYR', TH:'THB', PH:'PHP',
+  };
+  return map[region] || 'USD';
+}

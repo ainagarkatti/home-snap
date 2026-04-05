@@ -909,24 +909,35 @@ function closeSheet() {
 }
 
 // ── Upgrade Modal ──────────────────────────────────────────────────────────────
-const PRO_PRICES = {
-  USD:'$4.99', GBP:'£3.99', EUR:'€4.49', AED:'AED 18',
-  SAR:'SAR 18', QAR:'QAR 18', KWD:'KWD 1.5', BHD:'BHD 1.9',
-  OMR:'OMR 1.9', INR:'₹399', AUD:'A$7.99', CAD:'C$6.99',
-  SGD:'S$6.99', NZD:'NZ$7.99', HKD:'HK$39', JPY:'¥750',
-  CNY:'¥35', PKR:'PKR 1,400', BRL:'R$24.9', MXN:'MX$89',
-  ZAR:'R89', NGN:'₦7,500', KES:'KES 650', CHF:'CHF 4.49',
-  SEK:'SEK 52', NOK:'NOK 52', DKK:'DKK 33', MYR:'RM 22',
-  THB:'฿179', PHP:'₱289',
+const PLAN_PRICES = {
+  pro: {
+    USD:'$4.99', GBP:'£3.99', EUR:'€4.49', AED:'AED 18',
+    SAR:'SAR 18', QAR:'QAR 18', KWD:'KWD 1.5', BHD:'BHD 1.9',
+    OMR:'OMR 1.9', INR:'₹399', AUD:'A$7.99', CAD:'C$6.99',
+    SGD:'S$6.99', NZD:'NZ$7.99', HKD:'HK$39', JPY:'¥750',
+    CNY:'¥35', PKR:'PKR 1,400', BRL:'R$24.9', MXN:'MX$89',
+    ZAR:'R89', NGN:'₦7,500', KES:'KES 650', CHF:'CHF 4.49',
+    SEK:'SEK 52', NOK:'NOK 52', DKK:'DKK 33', MYR:'RM 22',
+    THB:'฿179', PHP:'₱289',
+  },
+  business: {
+    USD:'$19.99', GBP:'£15.99', EUR:'€17.99', AED:'AED 73',
+    SAR:'SAR 75', QAR:'QAR 73', KWD:'KWD 6.1', BHD:'BHD 7.5',
+    OMR:'OMR 7.7', INR:'₹1,599', AUD:'A$29.99', CAD:'C$26.99',
+    SGD:'S$26.99', NZD:'NZ$29.99', HKD:'HK$155', JPY:'¥2,999',
+    CNY:'¥145', PKR:'PKR 5,500', BRL:'R$99', MXN:'MX$349',
+    ZAR:'R349', NGN:'₦29,999', KES:'KES 2,599', CHF:'CHF 17.99',
+    SEK:'SEK 209', NOK:'NOK 209', DKK:'DKK 134', MYR:'RM 89',
+    THB:'฿699', PHP:'₱1,149',
+  },
 };
 
-function getProPrice() {
-  return PRO_PRICES[detectCurrency()] || PRO_PRICES.USD;
-}
-
 function showUpgradeModal() {
-  const priceEl = $('modal-price');
-  if (priceEl) priceEl.textContent = getProPrice();
+  const currency = detectCurrency();
+  const proEl = $('modal-price-pro');
+  if (proEl) proEl.textContent = PLAN_PRICES.pro[currency] || PLAN_PRICES.pro.USD;
+  const bizEl = $('modal-price-biz');
+  if (bizEl) bizEl.textContent = PLAN_PRICES.business[currency] || PLAN_PRICES.business.USD;
   $('upgrade-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -936,15 +947,17 @@ function hideUpgradeModal() {
   document.body.style.overflow = '';
 }
 
-function activatePro() {
+const PLAN_LABELS = { pro: '⚡ Pro', business: '🏢 Business', enterprise: '🌐 Enterprise' };
+
+function activatePlan(plan) {
   const user = getUser();
   if (!user) return;
-  user.plan = 'pro';
+  user.plan = plan;
   saveUser(user);
   hideUpgradeModal();
   updateProfileUI(ensureMonthReset(user));
-  $('user-dropdown-plan').textContent = '⚡ Pro Plan';
-  showToast('Pro plan activated! Enjoy unlimited snaps.', 'success');
+  $('user-dropdown-plan').textContent = `${PLAN_LABELS[plan] || plan} Plan`;
+  showToast(`${PLAN_LABELS[plan]} plan activated!`, 'success');
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────

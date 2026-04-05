@@ -278,21 +278,58 @@
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
-      <div class="upgrade-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
+      <h3 style="text-align:center;margin-bottom:4px">Choose your plan</h3>
+      <p style="text-align:center;color:var(--text-muted);font-size:0.82rem;margin-bottom:20px">Upgrade anytime. Cancel anytime.</p>
+
+      <div class="upgrade-plans">
+
+        <!-- Pro -->
+        <div class="upgrade-plan upgrade-plan-pro" onclick="activatePlan('pro')">
+          <div class="uplan-header">
+            <div>
+              <div class="uplan-name">⚡ Pro</div>
+              <div class="uplan-price"><strong id="modal-price-pro">$4.99</strong><span>/mo</span></div>
+            </div>
+            <span class="uplan-badge">Most popular</span>
+          </div>
+          <ul class="uplan-features">
+            <li>✓ Unlimited snaps</li>
+            <li>✓ Full history + PDF export</li>
+            <li>✓ Replacement cost estimates</li>
+          </ul>
+        </div>
+
+        <!-- Business -->
+        <div class="upgrade-plan upgrade-plan-biz" onclick="activatePlan('business')">
+          <div class="uplan-header">
+            <div>
+              <div class="uplan-name">🏢 Business</div>
+              <div class="uplan-price"><strong id="modal-price-biz">$19.99</strong><span>/mo</span></div>
+            </div>
+          </div>
+          <ul class="uplan-features">
+            <li>✓ Everything in Pro</li>
+            <li>✓ 5 team members</li>
+            <li>✓ Branded reports + API</li>
+          </ul>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="upgrade-plan upgrade-plan-ent" onclick="location.href='mailto:hello@homesnap.app'">
+          <div class="uplan-header">
+            <div>
+              <div class="uplan-name">🌐 Enterprise</div>
+              <div class="uplan-price"><strong>Custom</strong></div>
+            </div>
+          </div>
+          <ul class="uplan-features">
+            <li>✓ Unlimited team members</li>
+            <li>✓ White-label + integrations</li>
+            <li>✓ Dedicated support + SLA</li>
+          </ul>
+        </div>
+
       </div>
-      <h3>Upgrade to Pro</h3>
-      <p class="upgrade-price"><strong id="modal-price">$4.99</strong>/month</p>
-      <ul class="upgrade-features">
-        <li>✓ Unlimited snaps</li>
-        <li>✓ Full history forever</li>
-        <li>✓ PDF &amp; image export</li>
-        <li>✓ Replacement cost estimates</li>
-        <li>✓ Priority AI analysis</li>
-      </ul>
-      <button class="btn-primary" onclick="activatePro()">Start free trial</button>
       <button class="upgrade-dismiss" onclick="hideUpgradeModal()">Maybe later</button>
     </div>
   </div>
