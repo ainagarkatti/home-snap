@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Snap any home appliance and get instant AI-powered insights on age, quality, efficiency, and when to replace it." />
+  <meta name="theme-color" content="#0f0f13" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HomeSnap" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.svg" />
+  <title>HomeSnap — Appliance Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#6c63ff"/>
+        <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+        <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+        <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+        <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+        <circle cx="24" cy="12" r="1.5" fill="white"/>
+      </svg>
+      <div>
+        HomeSnap
+        <span class="logo-sub">Appliance Intelligence</span>
+      </div>
+    </div>
+    <button class="settings-btn" id="settings-btn" title="API Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- API Key Banner -->
+    <div class="api-banner" id="api-banner">
+      <span>⚡ Add your Anthropic API key to get started</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instruction-card">
+      <h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        How to get the best results
+      </h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Front panel</strong> — shoot straight-on to capture the brand name and model label</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Good lighting</strong> — avoid shadows; indoor lights or natural light work best</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Include the label</strong> — capture the energy/serial sticker if visible for higher accuracy</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Full device</strong> — include the whole appliance, not just a partial view</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capture Zone -->
+    <div class="capture-zone" id="capture-zone">
+      <!-- Placeholder -->
+      <div class="capture-placeholder" id="capture-placeholder">
+        <div class="capture-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="1.8">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <h3>Snap your appliance</h3>
+        <p>Take a photo or upload an image of any home device — fridge, washer, AC, TV, and more</p>
+        <div class="capture-actions">
+          <button class="chip" id="btn-camera">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Camera
+          </button>
+          <button class="chip" id="btn-upload">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </svg>
+            Upload
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div id="preview-wrap" class="hidden" style="width:100%">
+        <img id="preview-image" alt="Appliance preview" />
+        <div class="preview-overlay">
+          <span style="color:rgba(255,255,255,0.7);font-size:0.8rem">Ready to analyze</span>
+          <button class="preview-change" id="preview-change">Change photo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" accept="image/*" style="display:none" />
+
+    <!-- Analyze button -->
+    <div id="analyze-section" class="hidden">
+      <button class="analyze-btn" id="analyze-btn">
+        <span id="btn-text" style="display:flex;align-items:center;gap:10px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Analyze Appliance
+        </span>
+        <div id="btn-spinner" class="spinner hidden"></div>
+      </button>
+    </div>
+
+    <!-- Error toast -->
+    <div class="error-toast hidden" id="error-toast"></div>
+
+    <!-- Results -->
+    <div class="results hidden" id="results-section"></div>
+
+  </main>
+
+  <!-- ── API Key Modal ── -->
+  <div class="modal-overlay hidden" id="api-modal">
+    <div class="modal">
+      <h3>Anthropic API Key</h3>
+      <p>HomeSnap uses Claude's vision AI to analyze your appliances. Your key is stored locally on your device and never sent anywhere else.</p>
+      <div class="field">
+        <label>API Key</label>
+        <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" />
+      </div>
+      <button class="btn-primary" id="save-api-btn">Save & Continue</button>
+    </div>
+  </div>
+
+  <!-- ── Camera View ── -->
+  <div class="camera-view hidden" id="camera-view">
+    <video id="camera-feed" playsinline autoplay muted></video>
+    <div class="camera-controls">
+      <button class="cam-cancel" id="cam-cancel">Cancel</button>
+      <button class="shutter-btn" id="shutter"></button>
+      <button class="cam-flip" id="cam-flip" title="Flip camera">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
