@@ -354,7 +354,7 @@ async function analyze() {
     };
     saveSnap(snap);
 
-    renderResults(data, snap.id);
+    renderResults(data, snap.id, imageDataUrl);
     updateProfileUI(ensureMonthReset(getUser()));
   } catch (err) {
     showError(err.message || 'Something went wrong. Please try again.');
@@ -379,26 +379,256 @@ function showError(msg) {
   errorToast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ── Share ─────────────────────────────────────────────────────────────────────
-async function shareResult(result) {
-  const text = `${result.device_name}\n\n` +
-    `Age: ${result.age_years}\n` +
-    `Build Quality: ${result.manufacturing_quality?.label || ''}\n` +
-    `Environmental: ${result.environmental_impact?.label || ''}\n` +
-    `Running Cost: ${result.utility_bills?.annual_estimate || ''}\n` +
-    `Replace: ${result.replacement?.timeline || ''} (${result.replacement?.urgency || ''})\n\n` +
-    `Analyzed with HomeSnap`;
+// ── Share as image card ───────────────────────────────────────────────────────
+async function shareResult(result, imageDataUrl) {
+  const blob = await generateShareCard(result, imageDataUrl);
+  const file = new File([blob], 'homesnap-report.png', { type: 'image/png' });
 
   try {
-    if (navigator.share) {
-      await navigator.share({ title: result.device_name, text });
-    } else {
-      await navigator.clipboard.writeText(text);
-      showToast('Copied to clipboard!');
+    // Try native share with image (works on iOS Safari, Android Chrome → WhatsApp, Email, Save)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: `HomeSnap: ${result.device_name}`,
+        text: `Appliance report for ${result.device_name}`,
+        files: [file]
+      });
+      return;
     }
+    // Fallback: download as PNG
+    downloadBlob(blob, 'homesnap-report.png');
+    showToast('Report saved to your device!');
   } catch (err) {
-    if (err.name !== 'AbortError') showToast('Could not share', 'error');
+    if (err.name === 'AbortError') return;
+    // Final fallback: download
+    downloadBlob(blob, 'homesnap-report.png');
+    showToast('Report saved to your device!');
   }
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function generateShareCard(result, imageDataUrl) {
+  return new Promise(resolve => {
+    const W = 800, H = 1000;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#0f0f13';
+    ctx.fillRect(0, 0, W, H);
+
+    // Top accent bar
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#6c63ff'); grad.addColorStop(1, '#a78bfa');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, 6);
+
+    // Header
+    ctx.fillStyle = '#6c63ff';
+    roundRect(ctx, 32, 28, 44, 44, 10);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('HS', 54, 55);
+    ctx.fillStyle = '#f0f0f8';
+    ctx.font = 'bold 18px system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText('HomeSnap', 88, 55);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '13px system-ui';
+    ctx.fillText('Appliance Intelligence Report', 88, 72);
+
+    // Divider
+    ctx.strokeStyle = '#1e1e2e';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(32, 90); ctx.lineTo(W - 32, 90); ctx.stroke();
+
+    // Appliance image thumbnail (if available)
+    let yPos = 110;
+    const drawContent = () => {
+      // Device name section
+      ctx.fillStyle = '#1a1a24';
+      roundRect(ctx, 32, yPos, W - 64, 90, 12);
+      ctx.fill();
+      ctx.strokeStyle = '#2e2e3e';
+      ctx.lineWidth = 1;
+      roundRect(ctx, 32, yPos, W - 64, 90, 12);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f0f0f8';
+      ctx.font = 'bold 22px system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText(result.device_name || 'Unknown Device', 52, yPos + 34);
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '14px system-ui';
+      const meta = [result.brand, result.model !== 'Unknown' ? result.model : null, result.category].filter(Boolean).join(' · ');
+      ctx.fillText(meta, 52, yPos + 58);
+
+      // Score badge
+      const score = result.overall_rating?.score || 0;
+      const scoreColor = score >= 8 ? '#10b981' : score >= 6 ? '#f59e0b' : score >= 4 ? '#fb923c' : '#ef4444';
+      ctx.fillStyle = scoreColor;
+      ctx.font = 'bold 28px system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${score}/10`, W - 52, yPos + 44);
+      ctx.font = '12px system-ui';
+      ctx.fillText(result.overall_rating?.label || '', W - 52, yPos + 64);
+
+      yPos += 110;
+
+      // Badges row
+      const badges = [
+        { text: result.year_estimate || '', color: '#6c63ff', bg: 'rgba(108,99,255,0.15)' },
+        { text: result.market_status?.status || '', color: result.market_status?.status === 'Current' ? '#10b981' : '#f59e0b', bg: result.market_status?.status === 'Current' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)' },
+        { text: result.replacement?.urgency || '', color: result.replacement?.urgency?.includes('Not') ? '#10b981' : result.replacement?.urgency?.includes('Consider') ? '#f59e0b' : '#ef4444', bg: result.replacement?.urgency?.includes('Not') ? 'rgba(16,185,129,0.15)' : result.replacement?.urgency?.includes('Consider') ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)' }
+      ];
+      let bx = 32;
+      ctx.font = 'bold 12px system-ui';
+      ctx.textAlign = 'left';
+      badges.forEach(b => {
+        if (!b.text) return;
+        const tw = ctx.measureText(b.text).width + 24;
+        ctx.fillStyle = b.bg;
+        roundRect(ctx, bx, yPos, tw, 28, 14);
+        ctx.fill();
+        ctx.fillStyle = b.color;
+        ctx.fillText(b.text, bx + 12, yPos + 18);
+        bx += tw + 8;
+      });
+      yPos += 48;
+
+      // Data grid — 2 columns
+      const cards = [
+        { icon: '⏱', label: 'Age', value: result.age_years || '-' },
+        { icon: '🏭', label: 'Build Quality', value: result.manufacturing_quality?.label || '-' },
+        { icon: '🌿', label: 'Environment', value: result.environmental_impact?.label || '-', sub: result.environmental_impact?.energy_rating },
+        { icon: '⚡', label: 'Running Cost', value: result.utility_bills?.annual_estimate || '-' },
+        { icon: '🔄', label: 'Replace In', value: result.replacement?.timeline || '-' },
+        { icon: '📊', label: 'Market Status', value: result.market_status?.status || '-' },
+      ];
+
+      const cW = (W - 64 - 16) / 2;
+      cards.forEach((c, i) => {
+        const cx = 32 + (i % 2) * (cW + 16);
+        const cy = yPos + Math.floor(i / 2) * 110;
+        ctx.fillStyle = '#1a1a24';
+        roundRect(ctx, cx, cy, cW, 96, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#2e2e3e';
+        roundRect(ctx, cx, cy, cW, 96, 12);
+        ctx.stroke();
+
+        ctx.font = '20px system-ui';
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(c.icon, cx + 16, cy + 30);
+
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '11px system-ui';
+        ctx.fillText(c.label.toUpperCase(), cx + 16, cy + 52);
+
+        ctx.fillStyle = '#f0f0f8';
+        ctx.font = 'bold 15px system-ui';
+        const val = c.value.length > 18 ? c.value.slice(0, 16) + '…' : c.value;
+        ctx.fillText(val, cx + 16, cy + 72);
+        if (c.sub) {
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '11px system-ui';
+          ctx.fillText(c.sub, cx + 16, cy + 86);
+        }
+      });
+
+      yPos += 3 * 110 + 16;
+
+      // Verdict
+      if (result.overall_rating?.verdict) {
+        ctx.fillStyle = '#1a1a24';
+        roundRect(ctx, 32, yPos, W - 64, 70, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#2e2e3e';
+        roundRect(ctx, 32, yPos, W - 64, 70, 12);
+        ctx.stroke();
+        ctx.fillStyle = '#6b7280';
+        ctx.font = 'bold 11px system-ui';
+        ctx.textAlign = 'left';
+        ctx.fillText('OVERALL ASSESSMENT', 52, yPos + 22);
+        ctx.fillStyle = '#f0f0f8';
+        ctx.font = '13px system-ui';
+        const verdict = result.overall_rating.verdict;
+        const words = verdict.split(' ');
+        let line = '', lines = [], maxW = W - 120;
+        words.forEach(w => {
+          const test = line ? `${line} ${w}` : w;
+          if (ctx.measureText(test).width > maxW) { lines.push(line); line = w; }
+          else line = test;
+        });
+        if (line) lines.push(line);
+        lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, 52, yPos + 42 + i * 18));
+        yPos += 86;
+      }
+
+      // Footer
+      ctx.fillStyle = '#2e2e3e';
+      ctx.fillRect(32, H - 50, W - 64, 1);
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '12px system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('home-snap-pwa.vercel.app', 32, H - 20);
+      ctx.textAlign = 'right';
+      ctx.fillText(new Date().toLocaleDateString(), W - 32, H - 20);
+
+      canvas.toBlob(resolve, 'image/png');
+    };
+
+    // If we have a snap image, draw it
+    if (imageDataUrl) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.fillStyle = '#1a1a24';
+        roundRect(ctx, 32, yPos, W - 64, 160, 12);
+        ctx.fill();
+        // Draw image centered/cropped
+        const iAspect = img.width / img.height;
+        const boxW = W - 64, boxH = 160;
+        let iW = boxW, iH = iW / iAspect;
+        if (iH < boxH) { iH = boxH; iW = iH * iAspect; }
+        const ix = 32 + (boxW - iW) / 2, iy = yPos + (boxH - iH) / 2;
+        ctx.save();
+        roundRect(ctx, 32, yPos, W - 64, 160, 12);
+        ctx.clip();
+        ctx.drawImage(img, ix, iy, iW, iH);
+        ctx.restore();
+        yPos += 176;
+        drawContent();
+      };
+      img.onerror = () => { yPos += 0; drawContent(); };
+      img.src = imageDataUrl;
+    } else {
+      drawContent();
+    }
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
 
 // ── Render Results ────────────────────────────────────────────────────────────
@@ -521,12 +751,12 @@ function buildResultHTML(r) {
   `;
 }
 
-function renderResults(r, snapId) {
+function renderResults(r, snapId, imageDataUrl) {
   const resultsSection = $('results-section');
 
   const html = buildResultHTML(r) + `
     <div class="result-actions">
-      <button class="result-action-btn" onclick="shareResult(window.__lastResult)">
+      <button class="result-action-btn" onclick="shareResult(window.__lastResult, window.__lastImageDataUrl)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
@@ -550,6 +780,7 @@ function renderResults(r, snapId) {
   `;
 
   window.__lastResult = r;
+  window.__lastImageDataUrl = imageDataUrl;
   resultsSection.innerHTML = html;
   resultsSection.classList.remove('hidden');
   resultsSection.scrollIntoView({ behavior: 'smooth' });
