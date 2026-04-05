@@ -2,7 +2,7 @@
   "name": "HomeSnap — Appliance Intelligence",
   "short_name": "HomeSnap",
   "description": "Snap any home appliance and get instant AI-powered insights",
-  "start_url": "/",
+  "start_url": "/app.html",
   "display": "standalone",
   "background_color": "#0f0f13",
   "theme_color": "#6c63ff",

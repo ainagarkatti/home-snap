@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { image, mediaType } = req.body;
+  const { image, mediaType, currency = 'USD' } = req.body;
   if (!image || !mediaType) {
     return res.status(400).json({ error: 'Missing image or mediaType' });
   }
@@ -48,19 +48,20 @@ export default async function handler(req, res) {
     "score": 6,
     "impact": "Low / Medium / High",
     "label": "Low / Medium / High running cost",
-    "annual_estimate": "Rough annual running cost estimate or range, e.g. '$80–120/yr'",
+    "annual_estimate": "Rough annual running cost estimate or range expressed in ${currency}, e.g. '${currency} 80–120/yr'",
     "detail": "One sentence about energy/utility consumption"
   },
   "replacement": {
     "urgency": "Not needed / Consider soon / Replace now",
     "timeline": "e.g. '3–5 years' or 'Immediate'",
-    "reason": "One sentence explaining why"
+    "reason": "One sentence explaining why",
+    "estimated_cost": "Rough replacement cost range in ${currency}"
   },
   "fun_fact": "One interesting or useful fact about this appliance model or category",
   "confidence": "high / medium / low"
 }
 
-If you cannot identify any appliance in the image, set "identified" to false and fill other fields with null.
+Express all monetary costs in ${currency}. If you cannot identify any appliance in the image, set "identified" to false and fill other fields with null.
 Scores are 1–10 (10 = best). Be accurate and concise.`;
 
   try {

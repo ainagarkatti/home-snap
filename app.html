@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Snap any home appliance and get instant AI-powered insights on age, quality, efficiency, and when to replace it." />
+  <meta name="theme-color" content="#0f0f13" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HomeSnap" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.svg" />
+  <title>HomeSnap — Appliance Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Auth Screen ── -->
+  <div class="auth-screen" id="auth-screen">
+    <div class="auth-inner">
+      <div class="auth-logo">
+        <svg width="48" height="48" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#6c63ff"/>
+          <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+          <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+          <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+          <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+          <circle cx="24" cy="12" r="1.5" fill="white"/>
+        </svg>
+        <div>
+          <div class="auth-logo-name">HomeSnap</div>
+          <div class="auth-logo-sub">Appliance Intelligence</div>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+          <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuth(event)">
+          <div class="field">
+            <label for="auth-email">Email</label>
+            <input type="email" id="auth-email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" placeholder="••••••••" required autocomplete="current-password" minlength="6" />
+          </div>
+          <div id="auth-error" class="auth-error hidden"></div>
+          <button type="submit" class="btn-primary" id="auth-submit-btn" style="margin-top:20px">Sign In</button>
+        </form>
+
+        <p class="auth-note">Free — 5 snaps/month. No credit card required.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main App ── -->
+  <div class="app-shell hidden" id="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#6c63ff"/>
+          <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+          <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+          <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+          <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+          <circle cx="24" cy="12" r="1.5" fill="white"/>
+        </svg>
+        <div>
+          HomeSnap
+          <span class="logo-sub">Appliance Intelligence</span>
+        </div>
+      </div>
+      <div class="user-avatar-wrap" id="user-avatar-wrap" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <div class="user-dropdown hidden" id="user-dropdown">
+          <div class="user-dropdown-email" id="user-dropdown-email"></div>
+          <div class="user-dropdown-plan" id="user-dropdown-plan"></div>
+          <button class="user-dropdown-logout" onclick="logout()">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tab Contents -->
+    <main class="app-main" id="app-main">
+
+      <!-- Snap Tab -->
+      <div class="tab-content active" id="tab-snap">
+        <div class="instruction-card">
+          <h2>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            How to get the best results
+          </h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Front panel</strong> — shoot straight-on to capture the brand name and model label</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Good lighting</strong> — avoid shadows; indoor lights or natural light work best</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text"><strong>Include the label</strong> — capture the energy/serial sticker if visible for higher accuracy</div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text"><strong>Full device</strong> — include the whole appliance, not just a partial view</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Capture Zone -->
+        <div class="capture-zone" id="capture-zone">
+          <div class="capture-placeholder" id="capture-placeholder">
+            <div class="capture-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="1.8">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+            <h3>Snap your appliance</h3>
+            <p>Take a photo or upload an image of any home device</p>
+            <div class="capture-actions">
+              <label class="chip" for="file-camera">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                Camera
+              </label>
+              <label class="chip" for="file-upload">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                </svg>
+                Upload
+              </label>
+            </div>
+          </div>
+
+          <div id="preview-wrap" class="hidden" style="width:100%">
+            <img id="preview-image" alt="Appliance preview" />
+            <div class="preview-overlay">
+              <span style="color:rgba(255,255,255,0.7);font-size:0.8rem">Ready to analyze</span>
+              <button class="preview-change" id="preview-change">Change photo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- File inputs -->
+        <input type="file" id="file-camera" accept="image/*" capture="environment" style="display:none" />
+        <input type="file" id="file-upload" accept="image/*" style="display:none" />
+
+        <!-- Analyze -->
+        <div id="analyze-section" class="hidden">
+          <button class="analyze-btn" id="analyze-btn">
+            <span id="btn-text" style="display:flex;align-items:center;gap:10px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Analyze Appliance
+            </span>
+            <div id="btn-spinner" class="spinner hidden"></div>
+          </button>
+          <div class="loading-msg hidden" id="loading-msg">Analyzing image...</div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-toast hidden" id="error-toast"></div>
+
+        <!-- Results -->
+        <div class="results hidden" id="results-section"></div>
+      </div>
+
+      <!-- History Tab -->
+      <div class="tab-content" id="tab-history">
+        <div class="tab-header">
+          <h2 class="tab-title">Snap History</h2>
+          <p class="tab-subtitle" id="history-subtitle">Your analyzed appliances</p>
+        </div>
+        <div id="history-empty" class="history-empty hidden">
+          <div class="history-empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <h3>No snaps yet</h3>
+          <p>Snap your first appliance to see it here!</p>
+          <button class="btn-primary" style="max-width:200px;margin:0 auto" onclick="switchTab('snap')">Snap now</button>
+        </div>
+        <div id="history-grid" class="history-grid"></div>
+      </div>
+
+      <!-- Profile Tab -->
+      <div class="tab-content" id="tab-profile">
+        <div class="tab-header">
+          <h2 class="tab-title">Profile</h2>
+        </div>
+
+        <div class="profile-section">
+          <div class="profile-row">
+            <div class="profile-avatar" id="profile-avatar">U</div>
+            <div class="profile-info">
+              <div class="profile-email" id="profile-email"></div>
+              <span class="profile-plan-badge" id="profile-plan-badge">Free</span>
+            </div>
+          </div>
+
+          <div class="usage-card" id="usage-card">
+            <div class="usage-header">
+              <span class="usage-label">Snaps this month</span>
+              <span class="usage-count" id="usage-count">0 / 5</span>
+            </div>
+            <div class="usage-bar">
+              <div class="usage-fill" id="usage-fill" style="width:0%"></div>
+            </div>
+            <p class="usage-note" id="usage-note">5 snaps remaining</p>
+          </div>
+
+          <button class="upgrade-btn" id="upgrade-btn" onclick="showUpgradeModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Upgrade to Pro
+          </button>
+
+          <button class="signout-btn" onclick="logout()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="tab-bar">
+      <button class="tab-btn active" id="nav-snap" onclick="switchTab('snap')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        <span>Snap</span>
+      </button>
+      <button class="tab-btn" id="nav-history" onclick="switchTab('history')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>History</span>
+      </button>
+      <button class="tab-btn" id="nav-profile" onclick="switchTab('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ── Upgrade Modal ── -->
+  <div class="upgrade-modal hidden" id="upgrade-modal">
+    <div class="upgrade-modal-inner">
+      <button class="upgrade-close" onclick="hideUpgradeModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="upgrade-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <h3>Upgrade to Pro</h3>
+      <p class="upgrade-price"><strong>$4.99</strong>/month</p>
+      <ul class="upgrade-features">
+        <li>✓ Unlimited snaps</li>
+        <li>✓ Full history forever</li>
+        <li>✓ PDF &amp; image export</li>
+        <li>✓ Replacement cost estimates</li>
+        <li>✓ Priority AI analysis</li>
+      </ul>
+      <button class="btn-primary" onclick="activatePro()">Start free trial</button>
+      <button class="upgrade-dismiss" onclick="hideUpgradeModal()">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- ── Detail Sheet ── -->
+  <div class="sheet-overlay hidden" id="sheet-overlay" onclick="closeSheet()"></div>
+  <div class="sheet hidden" id="detail-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-content" id="sheet-content"></div>
+  </div>
+
+  <!-- ── Toast container ── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

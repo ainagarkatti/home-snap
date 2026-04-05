@@ -2,134 +2,396 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Snap any home appliance and get instant AI-powered insights on age, quality, efficiency, and when to replace it." />
-  <meta name="theme-color" content="#0f0f13" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="HomeSnap" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.svg" />
-  <title>HomeSnap — Appliance Intelligence</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#08080e" />
+  <title>HomeSnap — Know Every Appliance in Your Home</title>
+  <link rel="stylesheet" href="landing.css" />
 </head>
 <body>
 
-  <!-- ── Header ── -->
-  <header>
-    <div class="logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="#6c63ff"/>
-        <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
-        <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
-        <circle cx="16" cy="16.5" r="1.5" fill="white"/>
-        <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
-        <circle cx="24" cy="12" r="1.5" fill="white"/>
-      </svg>
-      <div>
-        HomeSnap
-        <span class="logo-sub">Appliance Intelligence</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- ── Main ── -->
-  <main>
-
-    <!-- Instructions -->
-    <div class="instruction-card">
-      <h2>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  <!-- ── Nav ── -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#6c63ff"/>
+          <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+          <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+          <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+          <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+          <circle cx="24" cy="12" r="1.5" fill="white"/>
         </svg>
-        How to get the best results
-      </h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-text"><strong>Front panel</strong> — shoot straight-on to capture the brand name and model label</div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>Good lighting</strong> — avoid shadows; indoor lights or natural light work best</div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-text"><strong>Include the label</strong> — capture the energy/serial sticker if visible for higher accuracy</div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-text"><strong>Full device</strong> — include the whole appliance, not just a partial view</div>
-        </div>
+        <span>HomeSnap</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/app.html" class="btn-ghost">Sign In</a>
+        <a href="/app.html" class="btn-accent">Get Started</a>
+      </div>
+      <button class="nav-mobile-cta" onclick="location.href='/app.html'">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="dot-grid"></div>
+    </div>
+
+    <!-- Floating appliance icons -->
+    <div class="floating-icons" aria-hidden="true">
+      <!-- Fridge -->
+      <div class="float-icon float-1">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect x="8" y="2" width="20" height="32" rx="3" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+          <line x1="8" y1="16" x2="28" y2="16" stroke="#a78bfa" stroke-width="1.5"/>
+          <line x1="14" y1="9" x2="14" y2="13" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="20" x2="14" y2="28" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- Washer -->
+      <div class="float-icon float-2">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect x="4" y="4" width="28" height="28" rx="3" fill="none" stroke="#6c63ff" stroke-width="1.5"/>
+          <circle cx="18" cy="20" r="7" fill="none" stroke="#6c63ff" stroke-width="1.5"/>
+          <circle cx="18" cy="20" r="3" fill="none" stroke="#6c63ff" stroke-width="1.5"/>
+          <circle cx="10" cy="9" r="1.5" fill="#6c63ff"/>
+          <circle cx="14" cy="9" r="1.5" fill="#6c63ff"/>
+        </svg>
+      </div>
+      <!-- AC -->
+      <div class="float-icon float-3">
+        <svg width="40" height="28" viewBox="0 0 40 28" fill="none">
+          <rect x="2" y="2" width="36" height="16" rx="3" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+          <line x1="8" y1="10" x2="32" y2="10" stroke="#a78bfa" stroke-width="1"/>
+          <line x1="8" y1="13" x2="32" y2="13" stroke="#a78bfa" stroke-width="1"/>
+          <path d="M14 18 Q16 24 18 22 Q20 20 22 26" stroke="#6c63ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- TV -->
+      <div class="float-icon float-4">
+        <svg width="40" height="34" viewBox="0 0 40 34" fill="none">
+          <rect x="2" y="2" width="36" height="24" rx="3" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+          <rect x="6" y="6" width="28" height="16" rx="1" fill="none" stroke="#a78bfa" stroke-width="1"/>
+          <line x1="16" y1="26" x2="14" y2="32" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="24" y1="26" x2="26" y2="32" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="32" x2="26" y2="32" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- Microwave -->
+      <div class="float-icon float-5">
+        <svg width="42" height="30" viewBox="0 0 42 30" fill="none">
+          <rect x="2" y="4" width="38" height="22" rx="3" fill="none" stroke="#6c63ff" stroke-width="1.5"/>
+          <rect x="6" y="8" width="18" height="14" rx="2" fill="none" stroke="#6c63ff" stroke-width="1.2"/>
+          <circle cx="32" cy="13" r="2.5" fill="none" stroke="#6c63ff" stroke-width="1.2"/>
+          <circle cx="32" cy="19" r="2.5" fill="none" stroke="#6c63ff" stroke-width="1.2"/>
+          <line x1="29" y1="13" x2="34.5" y2="13" stroke="#6c63ff" stroke-width="1.2"/>
+        </svg>
       </div>
     </div>
 
-    <!-- Capture Zone -->
-    <div class="capture-zone" id="capture-zone">
-      <!-- Placeholder -->
-      <div class="capture-placeholder" id="capture-placeholder">
-        <div class="capture-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="1.8">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-            <circle cx="12" cy="13" r="4"/>
-          </svg>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          AI-Powered Appliance Intelligence
         </div>
-        <h3>Snap your appliance</h3>
-        <p>Take a photo or upload an image of any home device — fridge, washer, AC, TV, and more</p>
-        <div class="capture-actions">
-          <label class="chip" for="file-camera">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <h1 class="hero-headline">
+          Know every appliance<br />
+          <span class="gradient-text">in your home.</span>
+        </h1>
+        <p class="hero-sub">
+          Snap any device. Instantly know its age, efficiency, running cost, and exactly when to replace it.
+        </p>
+        <div class="hero-ctas">
+          <a href="/app.html" class="cta-primary">Start for free →</a>
+          <a href="#how-it-works" class="cta-ghost">See how it works</a>
+        </div>
+        <div class="hero-social-proof">
+          <div class="avatars">
+            <div class="avatar av1">A</div>
+            <div class="avatar av2">M</div>
+            <div class="avatar av3">S</div>
+            <div class="avatar av4">R</div>
+          </div>
+          <span>Trusted by homeowners in 40+ countries</span>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="phone-mockup">
+          <div class="phone-inner">
+            <!-- Phone header -->
+            <div class="phone-header">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="6" fill="#6c63ff"/>
+                <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+                <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+                <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+                <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+                <circle cx="24" cy="12" r="1.5" fill="white"/>
+              </svg>
+              <span>HomeSnap</span>
+              <div class="phone-status-dot"></div>
+            </div>
+            <!-- Image placeholder -->
+            <div class="phone-image-placeholder">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span>Samsung French Door Refrigerator</span>
+            </div>
+            <!-- Device name -->
+            <div class="phone-device-name">Samsung French Door Refrigerator</div>
+            <!-- Badges -->
+            <div class="phone-badges">
+              <span class="phone-badge pb-purple">2017–2019</span>
+              <span class="phone-badge pb-green">Good</span>
+              <span class="phone-badge pb-blue">Current</span>
+            </div>
+            <!-- Score bars -->
+            <div class="phone-scores">
+              <div class="phone-score-row">
+                <span class="phone-score-label">Environment</span>
+                <div class="phone-score-bar">
+                  <div class="phone-score-fill psf-green" style="width:70%"></div>
+                </div>
+                <span class="phone-score-num">7/10</span>
+              </div>
+              <div class="phone-score-row">
+                <span class="phone-score-label">Energy Cost</span>
+                <div class="phone-score-bar">
+                  <div class="phone-score-fill psf-yellow" style="width:55%"></div>
+                </div>
+                <span class="phone-score-num psn-yellow">AED 680/yr</span>
+              </div>
+            </div>
+            <!-- Replace badge -->
+            <div class="phone-replace-badge">
+              🔄 Replace in 3–5 years
+            </div>
+          </div>
+          <!-- Glow effect -->
+          <div class="phone-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats ── -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-value">&#60; 3 seconds</div>
+        <div class="stat-label">Analysis time</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">10+ data points</div>
+        <div class="stat-label">Per snap</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">Any appliance</div>
+        <div class="stat-label">Works on all devices</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features" id="features">
+    <div class="section-inner">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need to understand your home</h2>
+      <p class="section-sub">HomeSnap turns a simple photo into a full appliance intelligence report in seconds.</p>
+
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon" style="background:rgba(108,99,255,0.15)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h3>Instant Identification</h3>
+          <p>Point your camera, get brand, model, and age identified in seconds. Works on fridges, washers, ACs, TVs, and more.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="transition-delay:0.1s">
+          <div class="feature-icon" style="background:rgba(16,185,129,0.15)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M3 3h18v18H3z" rx="2"/><path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <h3>Full Snap History</h3>
+          <p>Every snap saved. Track your home's appliance health over time. See which devices are aging fast.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="transition-delay:0.2s">
+          <div class="feature-icon" style="background:rgba(245,158,11,0.15)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <h3>Energy Intelligence</h3>
+          <p>Know what each appliance costs per year and its environmental footprint. Stop guessing your utility bill.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="transition-delay:0.3s">
+          <div class="feature-icon" style="background:rgba(239,68,68,0.15)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+            </svg>
+          </div>
+          <h3>Smart Replacement</h3>
+          <p>Get replacement timelines and urgency ratings before devices fail. Plan ahead, not in crisis mode.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-inner">
+      <div class="section-label">Process</div>
+      <h2 class="section-title">Up and running in 30 seconds</h2>
+      <p class="section-sub">No setup. No manuals. Just snap and know.</p>
+
+      <div class="steps-row">
+        <div class="hiw-step fade-up">
+          <div class="hiw-num">01</div>
+          <div class="hiw-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" stroke-width="2">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
               <circle cx="12" cy="13" r="4"/>
             </svg>
-            Camera
-          </label>
-          <label class="chip" for="file-upload">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
-              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+          </div>
+          <h3>Snap</h3>
+          <p>Take a photo of any home appliance — front panel works best. Capture the brand label if you can.</p>
+        </div>
+
+        <div class="hiw-connector" aria-hidden="true">
+          <div class="connector-line"></div>
+          <div class="connector-dot"></div>
+        </div>
+
+        <div class="hiw-step fade-up" style="transition-delay:0.15s">
+          <div class="hiw-num">02</div>
+          <div class="hiw-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
             </svg>
-            Upload
-          </label>
+          </div>
+          <h3>Analyze</h3>
+          <p>AI scores it across age, build quality, efficiency, environmental impact, and running cost.</p>
         </div>
-      </div>
 
-      <!-- Preview -->
-      <div id="preview-wrap" class="hidden" style="width:100%">
-        <img id="preview-image" alt="Appliance preview" />
-        <div class="preview-overlay">
-          <span style="color:rgba(255,255,255,0.7);font-size:0.8rem">Ready to analyze</span>
-          <button class="preview-change" id="preview-change">Change photo</button>
+        <div class="hiw-connector" aria-hidden="true">
+          <div class="connector-line"></div>
+          <div class="connector-dot"></div>
+        </div>
+
+        <div class="hiw-step fade-up" style="transition-delay:0.3s">
+          <div class="hiw-num">03</div>
+          <div class="hiw-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h3>Decide</h3>
+          <p>Know exactly when to repair, replace, or keep each device. Make smarter home decisions.</p>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- Hidden file inputs -->
-    <input type="file" id="file-camera" accept="image/*" capture="environment" style="display:none" />
-    <input type="file" id="file-upload" accept="image/*" style="display:none" />
+  <!-- ── Pricing ── -->
+  <section class="pricing" id="pricing">
+    <div class="section-inner">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, honest pricing</h2>
+      <p class="section-sub">Start free. Upgrade when you need more.</p>
 
-    <!-- Analyze button -->
-    <div id="analyze-section" class="hidden">
-      <button class="analyze-btn" id="analyze-btn">
-        <span id="btn-text" style="display:flex;align-items:center;gap:10px">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <div class="pricing-grid">
+        <div class="pricing-card fade-up">
+          <div class="plan-name">Free</div>
+          <div class="plan-price">
+            <span class="price-amount">$0</span>
+            <span class="price-period">/month</span>
+          </div>
+          <p class="plan-desc">Perfect for occasional appliance checks</p>
+          <ul class="plan-features">
+            <li><span class="pf-check">✓</span> 5 snaps per month</li>
+            <li><span class="pf-check">✓</span> Basic AI analysis</li>
+            <li><span class="pf-check">✓</span> 30-day history</li>
+            <li><span class="pf-check">✓</span> Share results</li>
+          </ul>
+          <a href="/app.html" class="plan-cta plan-cta-ghost">Get started free</a>
+        </div>
+
+        <div class="pricing-card pricing-card-pro fade-up" style="transition-delay:0.15s">
+          <div class="plan-badge">Most popular</div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">
+            <span class="price-amount">$4.99</span>
+            <span class="price-period">/month</span>
+          </div>
+          <p class="plan-desc">For homeowners who want full control</p>
+          <ul class="plan-features">
+            <li><span class="pf-check pf-accent">✓</span> <strong>Unlimited snaps</strong></li>
+            <li><span class="pf-check pf-accent">✓</span> Full history forever</li>
+            <li><span class="pf-check pf-accent">✓</span> PDF &amp; image export</li>
+            <li><span class="pf-check pf-accent">✓</span> Replacement cost estimates</li>
+            <li><span class="pf-check pf-accent">✓</span> Priority AI analysis</li>
+          </ul>
+          <a href="/app.html" class="plan-cta plan-cta-accent">Start Pro trial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Banner ── -->
+  <section class="cta-banner">
+    <div class="cta-banner-inner">
+      <h2>Ready to understand your home?</h2>
+      <p>Join thousands who use HomeSnap to make smarter home decisions.</p>
+      <a href="/app.html" class="cta-primary">Get started free →</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="#6c63ff"/>
+            <rect x="6" y="9" width="20" height="15" rx="2.5" fill="none" stroke="white" stroke-width="1.8"/>
+            <circle cx="16" cy="16.5" r="4" fill="none" stroke="white" stroke-width="1.7"/>
+            <circle cx="16" cy="16.5" r="1.5" fill="white"/>
+            <rect x="12" y="7" width="8" height="4" rx="1.5" fill="white"/>
+            <circle cx="24" cy="12" r="1.5" fill="white"/>
           </svg>
-          Analyze Appliance
-        </span>
-        <div id="btn-spinner" class="spinner hidden"></div>
-      </button>
+          <span>HomeSnap</span>
+        </div>
+        <p class="footer-tagline">Appliance Intelligence for every home.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
     </div>
+    <div class="footer-copy">© 2026 HomeSnap. Built with AI.</div>
+  </footer>
 
-    <!-- Error toast -->
-    <div class="error-toast hidden" id="error-toast"></div>
-
-    <!-- Results -->
-    <div class="results hidden" id="results-section"></div>
-
-  </main>
-
-
-  <script src="app.js"></script>
+  <script src="landing.js"></script>
 </body>
 </html>
