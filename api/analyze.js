@@ -87,7 +87,9 @@ Scores are 1–10 (10 = best). Be accurate and concise.`;
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      return res.status(response.status).json({ error: err.error?.message || 'Anthropic API error' });
+      const detail = JSON.stringify(err);
+      console.error('Anthropic error:', response.status, detail);
+      return res.status(response.status).json({ error: err.error?.message || 'Anthropic API error', _debug: detail });
     }
 
     const data = await response.json();
