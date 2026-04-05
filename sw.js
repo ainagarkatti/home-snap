@@ -1,4 +1,4 @@
-const CACHE = 'homesnap-v1';
+const CACHE = 'homesnap-v2';
 const ASSETS = ['/', '/index.html', '/styles.css', '/app.js'];
 
 self.addEventListener('install', e => {
