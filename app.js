@@ -5,8 +5,6 @@ let imageDataUrl = null;
 let stream = null;
 let facingMode = 'environment';
 
-const API_KEY_STORAGE = 'homesnap_api_key';
-
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 
@@ -18,58 +16,9 @@ const analyzeBtn       = $('analyze-btn');
 const analyzeSection   = $('analyze-section');
 const resultsSection   = $('results-section');
 const errorToast       = $('error-toast');
-const apiBanner        = $('api-banner');
-const apiModal         = $('api-modal');
-const apiInput         = $('api-key-input');
-const saveApiBtn       = $('save-api-btn');
-const settingsBtn      = $('settings-btn');
 const cameraView       = $('camera-view');
 const cameraFeed       = $('camera-feed');
 const fileInput        = $('file-input');
-
-// ── API key ────────────────────────────────────────────────────────────────
-function getApiKey() {
-  return localStorage.getItem(API_KEY_STORAGE) || '';
-}
-
-function saveApiKey(key) {
-  localStorage.setItem(API_KEY_STORAGE, key.trim());
-}
-
-function checkApiKey() {
-  const has = Boolean(getApiKey());
-  apiBanner.classList.toggle('hidden', has);
-  return has;
-}
-
-// ── Modal ──────────────────────────────────────────────────────────────────
-function openModal() {
-  apiInput.value = getApiKey();
-  apiModal.classList.remove('hidden');
-  setTimeout(() => apiInput.focus(), 50);
-}
-
-function closeModal() {
-  apiModal.classList.add('hidden');
-}
-
-settingsBtn.addEventListener('click', openModal);
-apiBanner.addEventListener('click', openModal);
-apiModal.addEventListener('click', e => { if (e.target === apiModal) closeModal(); });
-
-saveApiBtn.addEventListener('click', () => {
-  const key = apiInput.value.trim();
-  if (!key.startsWith('sk-ant-')) {
-    apiInput.style.borderColor = 'var(--red)';
-    setTimeout(() => apiInput.style.borderColor = '', 1500);
-    return;
-  }
-  saveApiKey(key);
-  closeModal();
-  checkApiKey();
-});
-
-apiInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveApiBtn.click(); });
 
 // ── File input ─────────────────────────────────────────────────────────────
 fileInput.addEventListener('change', e => {
@@ -154,9 +103,6 @@ analyzeBtn.addEventListener('click', analyze);
 async function analyze() {
   if (!imageDataUrl) return;
 
-  const key = getApiKey();
-  if (!key) { openModal(); return; }
-
   setLoading(true);
   errorToast.classList.add('hidden');
   resultsSection.classList.add('hidden');
@@ -164,95 +110,22 @@ async function analyze() {
   const base64 = imageDataUrl.split(',')[1];
   const mediaType = imageDataUrl.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
 
-  const prompt = `You are an expert home appliance analyst. Analyze this image of a home device or appliance and return ONLY valid JSON (no markdown, no extra text) matching this exact structure:
-
-{
-  "identified": true,
-  "device_name": "Full product name",
-  "brand": "Brand name",
-  "model": "Model number/name if visible, else 'Unknown'",
-  "category": "Category (e.g. Refrigerator, Washing Machine, AC Unit, Microwave, TV, etc.)",
-  "year_estimate": "Estimated year range, e.g. '2018–2020'",
-  "age_years": "Estimated current age in years, e.g. '5–7 years'",
-  "manufacturing_quality": {
-    "score": 7,
-    "label": "Good / Average / Poor",
-    "detail": "One sentence about build/manufacturing quality"
-  },
-  "market_status": {
-    "status": "Current / Discontinued / Updated",
-    "label": "Short label",
-    "detail": "One sentence about market availability"
-  },
-  "overall_rating": {
-    "score": 7,
-    "label": "Excellent / Good / Average / Below Average / Poor",
-    "verdict": "One sentence overall assessment"
-  },
-  "environmental_impact": {
-    "score": 6,
-    "label": "Eco-Friendly / Average / High Impact",
-    "energy_rating": "Energy Star / A+++ / A++ / A+ / A / B / C / Unknown",
-    "detail": "One sentence about environmental credentials"
-  },
-  "utility_bills": {
-    "score": 6,
-    "impact": "Low / Medium / High",
-    "label": "Low / Medium / High running cost",
-    "annual_estimate": "Rough annual running cost estimate or range, e.g. '$80–120/yr'",
-    "detail": "One sentence about energy/utility consumption"
-  },
-  "replacement": {
-    "urgency": "Not needed / Consider soon / Replace now",
-    "timeline": "e.g. '3–5 years' or 'Immediate'",
-    "reason": "One sentence explaining why"
-  },
-  "fun_fact": "One interesting or useful fact about this appliance model or category",
-  "confidence": "high / medium / low"
-}
-
-If you cannot identify any appliance in the image, set "identified" to false and fill other fields with null.
-Scores are 1–10 (10 = best). Be accurate and concise.`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/analyze', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-calls': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-6',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-            { type: 'text', text: prompt }
-          ]
-        }]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64, mediaType })
     });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `API error ${res.status}`);
-    }
-
     const data = await res.json();
-    const text = data.content[0].text.trim();
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('Could not parse response');
-    const result = JSON.parse(jsonMatch[0]);
+    if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
 
-    if (!result.identified) {
+    if (!data.identified) {
       showError("Hmm, I couldn't identify a home appliance in this image. Try a clearer photo of the device, ideally showing the front panel or label.");
       return;
     }
 
-    renderResults(result);
+    renderResults(data);
   } catch (err) {
     showError(err.message || 'Something went wrong. Please try again.');
   } finally {
@@ -426,8 +299,6 @@ function esc(str) {
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
-checkApiKey();
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
